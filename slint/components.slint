@@ -1,0 +1,183 @@
+import { Button, TextEdit, LineEdit } from "std-widgets.slint";
+import { AppPalette } from "styles.slint";
+
+export component Label {
+    in-out property <string> Text: "My Text";
+    in-out property <brush> fontColor: AppPalette.foreground;
+    in-out property <length> fontSize: 14px;
+    Rectangle {
+        Text {
+            color: fontColor;
+            overflow: elide;
+            text: Text;
+            font-size: fontSize;
+        }
+    }
+}
+
+export component PushButton {
+    @children
+    in-out property <length> borderRadius: 8px;
+    in-out property <length> padX: 30px;
+    in-out property <length> padY: 5px;
+    in-out property <LayoutAlignment> textAlignment: LayoutAlignment.center;
+    in-out property <string> Text: "My Button";
+    in-out property <length> fontSize: 14px;
+    in-out property <brush> Gradient: transparent;
+    in-out property <bool> Enabled: true;
+    in-out property <bool> Visible: true;
+    in-out property <{dropShadow-x: length, dropShadow-y: length, dropShadow-color: brush, dropShadow-blur: length}> dropShadow: {dropShadow-x: 0px, dropShadow-y: 3px, dropShadow-color: rgba(0, 0, 0, 0.2), dropShadow-blur: 5px};
+
+    in-out property <bool> hasIcon: false;
+    in-out property <image> Icon: @image-url("resources/default.png");
+    in-out property <length> iconSize: 14px;
+
+    callback onClicked();
+    callback onDoubleClicked();
+
+    Rectangle {
+        background: Gradient == transparent ? AppPalette.background: Gradient;
+        border-radius: borderRadius;
+        opacity: Visible ? (Enabled ? 1.0 : 0.5) : 0.0;
+        drop-shadow-offset-x: dropShadow.dropShadow-x;
+        drop-shadow-offset-y: dropShadow.dropShadow-y;
+        drop-shadow-blur: dropShadow.dropShadow-blur;
+        drop-shadow-color: dropShadow.dropShadow-color;
+        layout := HorizontalLayout {
+            padding-left: padX / 2;
+            padding-right: padX / 2 ;
+            padding-top: padY / 2 ;
+            padding-bottom: padY / 2 ;
+            alignment: textAlignment;
+            spacing: 8px;
+            if hasIcon : Image {
+                source: Icon;
+                width: iconSize;
+                height: iconSize;
+            }
+            lab := Label {
+                Text: Text;
+                fontColor: AppPalette.foreground;
+                fontSize: fontSize;
+            }
+        }   
+
+        TouchArea{
+            width: parent.width;
+            height: parent.height;
+            clicked => {
+                if (!Enabled) {return;}
+                root.onClicked();
+            }
+            double-clicked => {
+                if (!Enabled) {return;}
+                root.onDoubleClicked();
+            }
+        }
+    }
+}
+
+export component Icon {
+    @children
+    in-out property <image> Icon: @image-url("resources/default.png");
+    in-out property <length> iconSize: 14px;
+    in-out property <length> Padding: 12px;
+    in-out property <float> Opacity: 1;
+    in-out property <brush> Background: AppPalette.background;
+    in-out property <bool> isCircle: false;
+    in-out property <bool> Visible: true;
+    in-out property <{dropShadow-x: length, dropShadow-y: length, dropShadow-color: brush, dropShadow-blur: length}> dropShadow: {dropShadow-x: 0px, dropShadow-y: 3px, dropShadow-color: rgba(0, 0, 0, 0.2), dropShadow-blur: 5px};
+
+    Rectangle {
+        border-radius: isCircle ? parent.width / 2 : 5px;
+        background: Background;
+        drop-shadow-offset-x: dropShadow.dropShadow-x;
+        drop-shadow-offset-y: dropShadow.dropShadow-y;
+        drop-shadow-blur: dropShadow.dropShadow-blur;
+        drop-shadow-color: dropShadow.dropShadow-color;
+        opacity: Visible ? Opacity : 0.0;
+        HorizontalLayout {
+            padding: Padding;
+            alignment: LayoutAlignment.center;
+            width: parent.width;
+            height: parent.height;
+            Image {
+                source: Icon;
+                width: iconSize;
+                height: iconSize;
+            }
+        }
+    }
+}
+
+export component IconButton inherits Icon{
+    callback onClicked();
+    callback onDoubleClicked();
+
+    in-out property <bool> Enabled: true;
+
+    Opacity: Enabled ? 1.0 : 0.5;
+
+    TouchArea{
+        width: parent.width;
+        height: parent.height;
+        clicked => {
+            if (!Enabled) {return;}
+            root.onClicked();
+        }
+        double-clicked => {
+            if (!Enabled) {return;}
+            root.onDoubleClicked();
+        }
+    } 
+}
+
+export component InputBox {
+    in-out property <string> Placeholder: "Enter text...";
+    in-out property <bool> hasIcon: false;
+    in-out property <bool> hasLabel: true;
+    in-out property <image> Icon: @image-url("resources/default.png");
+    in-out property <length> iconSize: 14px;
+    in-out property <string> labelText: "Label";
+    in-out property <brush> labelColor: AppPalette.foreground;
+    in-out property <InputType> InputType: text;
+    HorizontalLayout {
+        spacing: 8px;
+
+        if !hasLabel && hasIcon : Icon {
+            Icon: Icon;
+            iconSize: iconSize;     
+        }
+
+        if hasLabel && !hasIcon : Label {
+            Text: labelText;
+            fontColor: labelColor;
+        }
+
+        LineEdit {
+            placeholder-text: Placeholder;
+            input-type: InputType;
+        }
+    }
+}
+
+export component LabelInputBox {
+    in-out property <string> Placeholder: "Enter text...";
+    in-out property <string> Label: "Enter text...";
+    in-out property <InputType> InputType: text;
+
+    VerticalLayout {
+        spacing: 5px;
+        HorizontalLayout {
+            alignment: LayoutAlignment.start;
+            Label {
+                Text: Label;
+                fontSize: 12px;
+            }
+        }
+        LineEdit {
+            placeholder-text: Placeholder;
+            input-type: InputType;
+        }
+    }
+}

@@ -1,0 +1,132 @@
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import Gradient kivy_gradient.Gradient
+
+<OButton>:
+    text: 'New Button'
+    size: "90dp", "40dp"
+    size_hint: None, None
+    font_name: 'InriaSans'
+    font_size: '12sp'
+    canvas.after:
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            texture: Gradient.vertical([1,1,1, 0.4], [1,1,1, 0.3], [0,0,0, 0.1], [1,1,1, 0.2])
+            radius: self.border_radius
+    canvas.before:
+        Color:
+            rgba: self.border_color
+        RoundedRectangle:
+            size: self.width +self.border_width, self.height +self.border_width
+            pos: self.x - self.border_width/2, self.y - self.border_width/2
+            radius: [r + self.border_width/2 for r in self.border_radius]
+        Color:
+            rgba:self.b_color if self.state == 'normal' else self.on_click_color
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: self.border_radius
+        
+<OTextField>:
+    size: "200dp", "40dp"
+    size_hint: None, None
+    font_name: 'InriaSans'
+    multiline: False
+    do_wrap: True
+    hint_text: 'Enter Text'
+    hint_text_color: self.hint_color
+    halign: 'left'
+    valign: 'middle'
+    font_size: '12sp'
+    canvas.after:
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            texture: Gradient.vertical([0,0,0, 0.2], [0,0,0, 0],[0,0,0, 0], [0,0,0, 0], [0,0,0, 0.2])
+            radius: self.border_radius
+    canvas.before:
+        Color:
+            rgba: self.border_color
+        RoundedRectangle:
+            size: self.width +self.border_width, self.height +self.border_width
+            pos: self.x - self.border_width/2, self.y - self.border_width/2
+            radius: [r + self.border_width/2 for r in self.border_radius]
+        Color:
+            rgba:self.b_color
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: self.border_radius
+        Color:
+            rgba: self.hint_color if not self.text else self.foreground_color
+        
+<OText>:
+    canvas.before:
+        Color:
+            rgba: self.b_color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    Label:
+        id: label
+        text: root.text
+        font_size: '12sp'
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        size_hint: None, None
+        height: self.texture_size[1]
+        width: self.texture_size[0]
+        font_name: 'InriaSans'
+        color: root.color
+        font_size: root.font_size
+    
+    
+    
+
+<OProgressBar>:
+    size: "200dp", "40dp"
+    size_hint: None, None
+    max_value: 100
+    value:0
+    Widget:
+        size: root.size
+        canvas.after:
+            RoundedRectangle:
+                size: root.size
+                pos: root.pos
+                texture: Gradient.vertical([1,1,1, 0.4], [1,1,1, 0.3], [0,0,0, 0.1], [1,1,1, 0.2])
+                radius: root.border_radius
+        canvas.before:
+            Color:
+                rgba: root.border_color
+            RoundedRectangle:
+                size: root.width +root.border_width, root.height +root.border_width
+                pos: root.x - root.border_width/2, root.y - root.border_width/2
+                radius: [r + root.border_width/2 for r in root.border_radius]
+            Color:
+                rgba:root.b_color
+            RoundedRectangle:
+                size: root.size
+                pos: root.pos
+                radius: root.border_radius
+            Color:
+                rgba: root.foreground_color
+            RoundedRectangle:
+                size: root.width * root.value / root.max_value, root.height
+                pos: root.x, root.y
+                radius: root.border_radius 
+            Color:
+                rgba: 0,0,0,1  
+
+    OText:
+        text: str(root.value) + '%'
+        color: root.color
+        size_hint: None, None
+        size: self.size
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        font_size: root.font_size
+        font_name: 'InriaSans'
+        
+        
+
+    
